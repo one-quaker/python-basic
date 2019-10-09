@@ -8,3 +8,6 @@
 #misc folders
 img/
 wall/
+
+#mac
+.DS_Store

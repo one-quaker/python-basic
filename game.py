@@ -1,6 +1,5 @@
 import random
 import time
-import sys
 
 
 STONE = 'stone 🏔'
@@ -57,13 +56,18 @@ def make_csv(data):
 
 def print_winner():
     msg = '\ngame over!\n'
+    promocode = ''
+
     if USER_SCORE > ENEMY_SCORE:
         msg += 'User win!!! 🍾😎💪'
+        promocode = '\nYour promocode for "Python Basic" course: 👉 Python-10 👈'
     elif USER_SCORE < ENEMY_SCORE:
         msg += 'Enemy win!!! 💀🤖💀'
     else:
         msg += 'Draw! 🙂🤝🤖'
     print(msg.upper())
+    if promocode:
+        print(promocode)
 
 
 while True: # game loop
@@ -98,7 +102,7 @@ while True: # game loop
         GAME_LOG.append([ROUND, user_choice, enemy_choice, USER_SCORE, ENEMY_SCORE, winner])
         ROUND += 1
 
-    if ROUND > 5 and USER_SCORE != ENEMY_SCORE: # if all True - stop game loop
+    if ROUND > 3 and USER_SCORE != ENEMY_SCORE: # if all True - stop game loop
         break
 
 
