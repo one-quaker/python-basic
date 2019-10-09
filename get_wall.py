@@ -74,7 +74,7 @@ def apply_random_wallpaper():
         print(f'"{IMG_DIR}" is empty, skip...')
         return
 
-    random_fn = random.choice()
+    random_fn = random.choice(img_list)
     random_fp = os.path.join(IMG_DIR, random_fn)
 
     if sys.platform == 'darwin':
