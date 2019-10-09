@@ -11,6 +11,7 @@ import requests
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODE_DOWN, MODE_RAND, MODE_ROTATE, MODE_ALL = ('download', 'random', 'rotate', 'all')
 MODE_CHOICES = (MODE_DOWN, MODE_RAND, MODE_ROTATE, MODE_ALL)
+DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0) Gecko/20100101 Firefox/68.0'
 
 
 parser = argparse.ArgumentParser()
@@ -19,6 +20,7 @@ parser.add_argument('-p', '--max-page', type=int, default=1)
 parser.add_argument('-m', '--mode', type=str, choices=MODE_CHOICES, default=MODE_ALL)
 parser.add_argument('-r', '--rotate-interval', type=int, default=600)
 parser.add_argument('-O', '--out-dir', type=str, default='img')
+parser.add_argument('-U', '--user-agent', type=str, default=DEFAULT_USER_AGENT)
 
 
 ARG = parser.parse_args()
@@ -30,7 +32,7 @@ IMG_ROOT_DIR = os.path.join(ROOT_DIR, ARG.out_dir)
 IMG_DIR = os.path.join(IMG_ROOT_DIR, ARG.search)
 
 
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0) Gecko/20100101 Firefox/68.0'
+USER_AGENT = ARG.user_agent
 
 
 headers = {
@@ -82,6 +84,25 @@ def apply_random_wallpaper():
 
     if sys.platform == 'darwin':
         os.system('osascript -e \'tell application "Finder" to set desktop picture to POSIX file "{}"\''.format(random_fp))
+    elif sys.platform == 'win32':
+        import struct
+        import ctypes
+
+        PATH = random_fp
+        SPI_SETDESKWALLPAPER = 20
+
+        def is_64bit_windows():
+            """Check if 64 bit Windows OS"""
+            return struct.calcsize('P') * 8 == 64
+
+        def changeBG(path):
+            """Change background depending on bit size"""
+            if is_64bit_windows():
+                ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, path, 3)
+            else:
+                ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, path, 3)
+        changeBG(PATH)
+
     else:
         print('Random image is not supported on your operating system "{}"'.format(sys.platform))
 
