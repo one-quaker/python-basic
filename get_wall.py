@@ -2,20 +2,23 @@ import os
 import random
 import sys
 import argparse
+import time
 
 from bs4 import BeautifulSoup
 import requests
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-MODE_DOWN, MODE_RAND, MODE_ALL = ('download', 'random', 'all')
-MODE_CHOICES = (MODE_DOWN, MODE_RAND, MODE_ALL)
+MODE_DOWN, MODE_RAND, MODE_ROTATE, MODE_ALL = ('download', 'random', 'rotate', 'all')
+MODE_CHOICES = (MODE_DOWN, MODE_RAND, MODE_ROTATE, MODE_ALL)
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--search', type=str, default='landscape')
 parser.add_argument('-p', '--max-page', type=int, default=1)
 parser.add_argument('-m', '--mode', type=str, choices=MODE_CHOICES, default=MODE_ALL)
+parser.add_argument('-r', '--rotate-interval', type=int, default=600)
+parser.add_argument('-O', '--out-dir', type=str, default='img')
 
 
 ARG = parser.parse_args()
@@ -23,7 +26,7 @@ ARG = parser.parse_args()
 
 BASE_URL = 'https://www.pexels.com/search'
 URL = '{}/{search}/'.format(BASE_URL, **ARG.__dict__)
-IMG_ROOT_DIR = os.path.join(ROOT_DIR, 'img')
+IMG_ROOT_DIR = os.path.join(ROOT_DIR, ARG.out_dir)
 IMG_DIR = os.path.join(IMG_ROOT_DIR, ARG.search)
 
 
@@ -90,3 +93,7 @@ elif ARG.mode == MODE_DOWN:
     download()
 elif ARG.mode == MODE_RAND:
     apply_random_wallpaper()
+elif ARG.mode == MODE_ROTATE:
+    while True:
+        apply_random_wallpaper()
+        time.sleep(ARG.rotate_interval)
