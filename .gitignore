@@ -1,0 +1,10 @@
+#editor
+.vscode
+
+#json/csv/etc
+*.json
+*.csv
+
+#misc folders
+img/
+wall/
